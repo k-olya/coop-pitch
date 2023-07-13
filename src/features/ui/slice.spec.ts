@@ -3,6 +3,7 @@ import reducer, { UiState, setScreen } from "./slice";
 describe("ui reducer", () => {
   const initialState: UiState = {
     screen: "main",
+    abilities: [],
   };
 
   it("should handle initial state", () => {

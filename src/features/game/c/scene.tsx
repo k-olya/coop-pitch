@@ -19,7 +19,8 @@ import { Player } from "./player";
 import { ShadedBox } from "./shaded-box";
 import { useAnimation } from "app/animation";
 import { PI, lerp } from "app/math";
-import { useSelector } from "app/store";
+import { useDispatch, useSelector } from "app/store";
+import { addAbility } from "features/ui/slice";
 
 const fragmentShader = `
 // 'Warp Speed' by David Hoskins 2013.
@@ -55,19 +56,34 @@ const fragmentShader = `
 }
 `;
 export const Scene = () => {
+  const dispatch = useDispatch();
   const kbe = useSelector(s => s.kb.KeyE);
+  const abilities = useSelector(s => s.ui.abilities);
   const [contraptionUnlocked, setContraptionUnlocked] = useState(false);
   const [hover, setHover] = useState(false);
   const leverRef = useRef<THREE.Mesh>(null);
   const wallRef = useRef<THREE.Mesh>(null);
+  const timeoutRef = useRef<number | undefined>(undefined);
   const [wallX, setWallX] = useState(3.5);
+  const [renderDoor, setRenderDoor] = useState(false);
 
   useEffect(() => {
     if (kbe) {
-      setContraptionUnlocked(prev => !prev);
+      if (typeof timeoutRef.current !== "number") {
+        setContraptionUnlocked(true);
+        timeoutRef.current = window.setTimeout(() => {
+          timeoutRef.current = undefined;
+          setContraptionUnlocked(false);
+        }, 1500);
+      }
     }
   }, [kbe]);
-  useAnimation(Number(contraptionUnlocked), 500, (x, three, delta) => {
+  useEffect(() => {
+    window.setTimeout(() => {
+      setRenderDoor(true);
+    }, 500);
+  }, []);
+  useAnimation(Number(contraptionUnlocked), 250, (x, three, delta) => {
     if (leverRef.current && wallRef.current) {
       leverRef.current.rotation.x = lerp(PI / 5, (4 * PI) / 5, x);
       setWallX(lerp(3.5, 4.48, x));
@@ -78,7 +94,12 @@ export const Scene = () => {
       <Skybox />
       <SoftShadows />
       <ambientLight intensity={0.15} />
-      <KbMovable speed={1} gravity={3} sprint>
+      <KbMovable
+        speed={1}
+        gravity={3}
+        sprint={abilities.includes("sprint")}
+        jumpHeight={abilities.includes("jump") ? 1 : 0}
+      >
         <Box
           position={[0, -1.5, 0]}
           scale={[50, 0.2, 50]}
@@ -139,11 +160,13 @@ export const Scene = () => {
           receiveShadow
         />
         {/* exit door */}
-        <ShadedBox
-          position={[0, 0.8, -7.525]}
-          scale={[0.35, 0.6, 0.1]}
-          fragmentShader={fragmentShader}
-        />
+        {renderDoor && (
+          <ShadedBox
+            position={[0, 0.8, -7.525]}
+            scale={[0.35, 0.6, 0.1]}
+            fragmentShader={fragmentShader}
+          />
+        )}
         {/* back wall lever */}
         <group>
           <Box
@@ -165,13 +188,33 @@ export const Scene = () => {
         <Box position={[1, 0.5, -8]} scale={[8, 4, 1]} collide receiveShadow />
         <pointLight position={[0, 10, -5]} intensity={0.5} castShadow />
         <pointLight position={[0, 10, 0]} intensity={0.5} castShadow />
-        <Sphere position={[-1.5, -0.25, 0]} scale={[0.1, 0.1, 0.1]}>
-          {/* "#84cc16" */}
-          <meshStandardMaterial color="orange" />
-        </Sphere>
-        <Icosahedron position={[3.5, -0.25, 0]} scale={[0.1, 0.1, 0.1]}>
-          <meshStandardMaterial color="orange" />
-        </Icosahedron>
+        {!abilities.includes("jump") && (
+          <>
+            <Box
+              collide
+              position={[-1.5, -0.25, 0]}
+              scale={[0.1, 0.1, 0.1]}
+              onCollide={() => dispatch(addAbility("jump"))}
+            />
+            <Sphere position={[-1.5, -0.25, 0]} scale={[0.1, 0.1, 0.1]}>
+              {/* "#84cc16" */}
+              <meshStandardMaterial color="orange" />
+            </Sphere>
+          </>
+        )}
+        {!abilities.includes("sprint") && (
+          <>
+            <Box
+              collide
+              position={[3.5, -0.25, 0]}
+              scale={[0.05, 0.05, 0.05]}
+              onCollide={() => dispatch(addAbility("sprint"))}
+            />
+            <Icosahedron position={[3.5, -0.25, 0]} scale={[0.1, 0.1, 0.1]}>
+              <meshStandardMaterial color="orange" />
+            </Icosahedron>
+          </>
+        )}
         <group
           scale={[0.002, 0.002, 0.002]}
           position={[2, -0.48, 0]}

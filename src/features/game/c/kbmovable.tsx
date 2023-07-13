@@ -107,7 +107,8 @@ export const KbMovable: FC<Props> = ({
       ];
       let canMove = true;
       for (const box of boxes) {
-        if (distanceToBox(playerXYZ, box) <= PLAYER_RADIUS) {
+        const distance = distanceToBox(playerXYZ, box);
+        if (distance <= PLAYER_RADIUS) {
           const normalXYZ = distanceToBoxByCoordinates(playerXYZ, box);
           collisionNormal
             .set(normalXYZ[0], normalXYZ[1], normalXYZ[2])
@@ -120,9 +121,15 @@ export const KbMovable: FC<Props> = ({
           r.y = Math.fround(r.y);
           r.z = Math.fround(r.z);
 
+          // nullify g when hitting anything vertically
           if (!r.y) {
             // console.log(g.current);
             g.current = 0;
+          }
+
+          // push player outside a cube if they accidentally ended up inside
+          if (distance <= PLAYER_RADIUS / 2.0) {
+            r.set(normalXYZ[0], normalXYZ[1], normalXYZ[2]).multiplyScalar(3);
           }
           box.onCollide && retrieveFunction(box.onCollide)();
         }
