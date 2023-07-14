@@ -128,7 +128,7 @@ export const KbMovable: FC<Props> = ({
           }
 
           // push player outside a cube if they accidentally ended up inside
-          if (distance <= PLAYER_RADIUS / 2.0) {
+          if (distance <= PLAYER_RADIUS - 0.05) {
             r.set(normalXYZ[0], normalXYZ[1], normalXYZ[2]).multiplyScalar(3);
           }
           box.onCollide && retrieveFunction(box.onCollide)();

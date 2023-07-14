@@ -142,7 +142,7 @@ export const Scene = () => {
           receiveShadow
         />
         {/* right podium */}
-        <Box position={[3.5, -1, -4.5]} scale={[1, 1, 10]} collide />
+        <Box position={[3.5, -1, -5.5]} scale={[1, 1, 10]} collide />
         {/* right movable wall */}
         <Box
           position={[wallX, 0, -3.5]}

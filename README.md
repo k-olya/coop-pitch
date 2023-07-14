@@ -1,9 +1,6 @@
-# react-three/fiber + redux + typescript 
+# Coop game pitch demo
 
-Create amazing 3d web apps and games with this.
-
-Also includes [tailwind](https://tailwindcss.com) and a tiny math/transition library.
-
+Does not currently support coop. Playable though.
 Altitude skybox by [jacobwindecker@hotmail.com](mailto:jacobwindecker@hotmail.com)
 
 ## scripts
@@ -11,12 +8,15 @@ Altitude skybox by [jacobwindecker@hotmail.com](mailto:jacobwindecker@hotmail.co
 This project is based on [Create React App](https://facebook.github.io/create-react-app/docs/getting-started).
 
 start in dev mode:
+
 ### `npm start`
 
 run tests:
+
 ### `npm test`
 
 build for production
+
 ### `npm run build`
 
 _Happy coding ♥_
