@@ -15,12 +15,12 @@ import { Box } from "./box";
 import { Demo } from "./demo";
 import { Pixelate } from "./pixelate.jsx";
 import { ShaderRenderPlane } from "./shader-render-plane";
-import { Player } from "./player";
 import { ShadedBox } from "./shaded-box";
 import { useAnimation } from "app/animation";
 import { PI, lerp } from "app/math";
 import { useDispatch, useSelector } from "app/store";
 import { addAbility } from "features/ui/slice";
+import { FBXPrimitive } from "./fbx-primitive";
 
 const fragmentShader = `
 // 'Warp Speed' by David Hoskins 2013.
@@ -216,11 +216,11 @@ export const Scene = () => {
           </>
         )}
         <group
-          scale={[0.002, 0.002, 0.002]}
+          scale={[0.4, 0.4, 0.4]}
           position={[2, -0.48, 0]}
-          rotation={[0, Math.PI, 0]}
+          rotation={[0, 0, 0]}
         >
-          <Player />
+          <FBXPrimitive src="Detective2.fbx" />
         </group>
         <PointerLockControls selector="canvas" />
         <Camera position={[0, 0, 0]} />

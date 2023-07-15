@@ -1,9 +1,10 @@
 {
   "name": "r3f-redux-ts",
+  "homepage": ".",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@react-three/drei": "^9.56.28",
+    "@react-three/drei": "^9.78.2",
     "@react-three/fiber": "^8.11.5",
     "@reduxjs/toolkit": "^1.9.3",
     "@testing-library/jest-dom": "^5.16.5",
