@@ -25,10 +25,34 @@ export function distanceToBoxByCoordinates(point: Point, box: Box): Point {
   const sinY = Math.sin(boxRotationY);
   const cosZ = Math.cos(boxRotationZ);
   const sinZ = Math.sin(boxRotationZ);
+
+  /* const R = [
+    [
+      cosY * cosZ,
+      -cosX * sinZ + sinX * sinY * cosZ,
+      sinX * sinZ + cosX * sinY * cosZ,
+    ],
+    [
+      cosY * sinZ,
+      cosX * cosZ + sinX * sinY * sinZ,
+      -sinX * cosZ + cosX * sinY * sinZ,
+    ],
+    [-sinY, sinX * cosY, cosX * cosY],
+  ];
   const rotatedPointX =
+    R[0][0] * localPointX + R[0][1] * localPointY + R[0][2] * localPointZ;
+  const rotatedPointY =
+    R[1][0] * localPointX + R[1][1] * localPointY + R[1][2] * localPointZ;
+  const rotatedPointZ =
+    R[2][0] * localPointX + R[2][1] * localPointY + R[2][2] * localPointZ;*/
+  /* const rotatedPointX =
     localPointX * (cosY * cosZ) +
     localPointY * (cosY * sinZ) -
-    localPointZ * sinY;
+    localPointZ * sinY;*/
+  const rotatedPointX =
+    localPointX * (cosY * cosZ) +
+    localPointY * (-cosX * sinZ + sinX * sinY * cosZ) +
+    localPointZ * (sinX * sinZ + cosX * sinY * cosZ);
   const rotatedPointY =
     localPointX * (sinX * sinY * cosZ - cosX * sinZ) +
     localPointY * (sinX * sinY * sinZ + cosX * cosZ) +

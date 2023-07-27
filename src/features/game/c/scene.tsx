@@ -123,6 +123,7 @@ export const Scene = () => {
         <Box
           position={[-1.5, 1, -4]}
           scale={[1, 1, 5]}
+          rotation={[-0.3, 0.0, 0.0]}
           collide
           castShadow
           color="#f87171"
@@ -186,8 +187,20 @@ export const Scene = () => {
         </group>
         {/* back wall */}
         <Box position={[1, 0.5, -8]} scale={[8, 4, 1]} collide receiveShadow />
-        <pointLight position={[0, 10, -5]} intensity={0.5} castShadow />
-        <pointLight position={[0, 10, 0]} intensity={0.5} castShadow />
+        <pointLight
+          position={[0, 10, -5]}
+          intensity={0.5}
+          castShadow
+          shadow-mapSize-height={512}
+          shadow-mapSize-width={512}
+        />
+        <pointLight
+          position={[0, 10, 0]}
+          intensity={0.5}
+          castShadow
+          shadow-mapSize-height={512}
+          shadow-mapSize-width={512}
+        />
         {!abilities.includes("jump") && (
           <>
             <Box

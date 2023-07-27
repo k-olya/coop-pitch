@@ -29,7 +29,7 @@ export const KbMovable: FC<Props> = ({
   children,
   speed = 1,
   fly,
-  gravity = 1,
+  gravity = 0,
   sprint,
   jumpHeight = 1,
 }) => {
@@ -109,27 +109,36 @@ export const KbMovable: FC<Props> = ({
       for (const box of boxes) {
         const distance = distanceToBox(playerXYZ, box);
         if (distance <= PLAYER_RADIUS) {
-          const normalXYZ = distanceToBoxByCoordinates(playerXYZ, box);
+          let normalXYZ = distanceToBoxByCoordinates(playerXYZ, box);
           collisionNormal
             .set(normalXYZ[0], normalXYZ[1], normalXYZ[2])
             .normalize();
-          collisionNormal.x = Math.fround(collisionNormal.x);
-          collisionNormal.y = Math.fround(collisionNormal.y);
-          collisionNormal.z = Math.fround(collisionNormal.z);
+          //collisionNormal.x = Math.fround(collisionNormal.x);
+          //collisionNormal.y = Math.fround(collisionNormal.y);
+          //collisionNormal.z = Math.fround(collisionNormal.z);
           r.projectOnPlane(collisionNormal);
-          r.x = Math.fround(r.x);
-          r.y = Math.fround(r.y);
-          r.z = Math.fround(r.z);
+          //r.x = Math.fround(r.x);
+          //r.y = Math.fround(r.y);
+          //r.z = Math.fround(r.z);
 
           // nullify g when hitting anything vertically
-          if (!r.y) {
-            // console.log(g.current);
+          if (collisionNormal.y && !collisionNormal.x && !collisionNormal.z) {
+            console.log(collisionNormal);
             g.current = 0;
           }
 
           // push player outside a cube if they accidentally ended up inside
-          if (distance <= PLAYER_RADIUS - 0.05) {
-            r.set(normalXYZ[0], normalXYZ[1], normalXYZ[2]).multiplyScalar(3);
+          if (distance <= PLAYER_RADIUS * 0.7) {
+            // console.log(normalXYZ, distance);
+            console.log(normalXYZ, distance);
+            const future = playerXYZ.map((x, i) => x + normalXYZ[i]) as Point;
+            if (distanceToBox(future, box) < distance) {
+              // console.log(normalXYZ, distance);
+              normalXYZ = normalXYZ.map(x => -x) as Point;
+            }
+            r.set(-normalXYZ[0], -normalXYZ[1], -normalXYZ[2])
+              .normalize()
+              .multiplyScalar(PLAYER_RADIUS - distance);
           }
           box.onCollide && retrieveFunction(box.onCollide)();
         }
